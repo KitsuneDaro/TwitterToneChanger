@@ -1,0 +1,25 @@
+{
+  "name": "LikeReimu",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "Sample Chrome Extension",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://twitter.com/*"
+      ],
+      "js": [
+        "./src/class/DividedString.js",
+        "./src/class/Tweet.js",
+        "./src/class/TweetObserver.js",
+        "./src/content.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/replace_word_dictionary.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
