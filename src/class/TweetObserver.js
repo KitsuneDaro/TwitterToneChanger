@@ -3,82 +3,67 @@ class TweetObserver {
         this.timeline = null;
         this.url = '';
         this.callback = callback;
+        this.observer = null;
     }
 
     observe() {
-        this.setup();
+        const observer = new MutationObserver(((m, o) => { this.setup(m, o) }).bind(this));
 
-        const head = document.getElementsByTagName('head')[0];
-        const observer = new MutationObserver(((m, o) => {this.setup(m, o)}).bind(this));
-
-        observer.observe(head, {
-            attributes: true,
+        observer.observe(document.head, {
             childList: true,
             subtree: true
         });
+        
+        this.setup();
     }
 
     setup(mutationsList, ownObserver) {
         const nowURL = window.location.href;
+        const root = document.querySelector('#react-root main');
 
-        if (nowURL != this.url) {
-            this.url = nowURL;
+        if (nowURL != this.url && root) {
+            const section = document.getElementsByClassName('css-1dbjc4n r-14lw9ot r-jxzhtn r-1ljd8xs r-13l2t4g r-1phboty r-16y2uox r-1jgb5lz r-11wrixw r-61z16t r-1ye8kvj r-13qz1uu r-184en5c')[0];
 
-            this.loadTimeline();
+            if(section && !document.body.contains(this.timeline)){
+                this.url = nowURL;
+                this.timeline = section;
+                
+                if(this.observer){
+                    this.observer.disconnect();
+                }
 
-            const root = document.getElementById('react-root');
-            const observer = new MutationObserver(((m, o) => {this.loadTimeline(m, o)}).bind(this));
-
-            observer.observe(root, {
-                attributes: true,
-                childList: true,
-                subtree: true
-            });
+                this.loadTimeline();
+            }
         }
     }
 
-    loadTimeline(mutationsList, ownObserver) {
-        this.timeline = document.getElementsByTagName('section')[0];
+    loadTimeline() {
+        this.observer = new MutationObserver(((m, o) => { this.updateAllTweets(m, o) }).bind(this));
 
-        if (typeof this.timeline != 'undefined') {
-            if(ownObserver) {
-                ownObserver.disconnect();
-            }
+        this.observer.observe(this.timeline, {
+            attributes: true,
+            childList: true,
+            subtree: true
+        });
+        
+        const articlesList = this.timeline.querySelectorAll('article');
 
-            const observer = new MutationObserver(((m, o) => {this.updateAllTweets(m, o)}).bind(this));
-
-            observer.observe(this.timeline, {
-                attributes: true,
-                childList: true,
-                subtree: true
-            });
-
-            const articlesList = this.timeline.querySelectorAll('article');
-            log(articlesList);
-
-            for(const article of articlesList){
-                this.updateTweet(article);
-            }
+        for (const article of articlesList) {
+            this.updateTweet(article);
         }
     }
 
     updateAllTweets(mutationsList, ownObserver) {
-        for(const mutation of mutationsList){
-            const elementsList = mutation.addedNodes;
-            
-            for (const element of elementsList) {
-                if (element.nodeName == 'DIV') {
-                    const article = element.getElementsByTagName('article')[0];
-                    
-                    this.updateTweet(article);
-                }
-            }
+        const articlesList = this.timeline.querySelectorAll('article:not([data-fixed="true"])');
+
+        for (const article of articlesList) {
+            this.updateTweet(article);
         }
     }
 
     updateTweet(article) {
-        if(Tweet.IsNonfixedTweetArticle(article)){
-            if(this.callback.mainText){
+        if (Tweet.IsNonfixedTweetArticle(article)) {
+            if (this.callback.mainText) {
                 Tweet.ObserveMainTextDiv(article, this.callback.mainText);
             }
             article.dataset.fixed = true;

@@ -54,6 +54,38 @@ class DividedString{
         return false;
     }
 
+    getDividedStringByJapanese() {
+        let newStringsList = [];
+        let tempString = '';
+        let tempCharKind = JapaneseCharacter.GetCharKind(this.fullDividedString[0]);
+    
+        for(let fullStringIndex = 0; fullStringIndex < this.fullDividedString.length; fullStringIndex++){
+            const char = this.fullDividedString[fullStringIndex];
+            const charKind = JapaneseCharacter.GetCharKind(char);
+            
+
+            if(tempCharKind != charKind){
+                if(tempCharKind == JapaneseCharacter.DividedKind()){
+                    tempString = '';
+                }
+
+                newStringsList.push({segment: tempString, kind: tempCharKind});
+                tempString = '';
+                tempCharKind = charKind;
+            }
+    
+            tempString += char;
+        }
+        
+        if(tempCharKind == JapaneseCharacter.DividedKind()){
+            tempString = '';
+        }
+
+        newStringsList.push({segment: tempString, kind: tempCharKind});
+    
+        return newStringsList;
+    }
+
     copy() {
         return DividedString(this.stringsList);
     }
@@ -175,5 +207,75 @@ class ReplaceInformation{
         this.prefixCharNum = prefixCharNum;
         this.charLength = charLength;
         this.replaceString = replaceString;
+    }
+}
+
+class JapaneseCharacter {
+    static IsHiragana(char){
+        return /[\u{3041}-\u{3093}\u{309B}-\u{309E}]/mu.test(char);
+    }
+
+    static IsKatakana(char){
+        return /[\u{30A1}-\u{30F6}]/mu.test(char);
+    }
+
+    static IsKanji(char){
+        return /^([\u{3005}\u{3007}\u{303b}\u{3400}-\u{9FFF}\u{F900}-\u{FAFF}\u{20000}-\u{2FFFF}][\u{E0100}-\u{E01EF}\u{FE00}-\u{FE02}]?)$/mu.test(char);
+    }
+
+    static IsEnter(char){
+        return char == '\n';
+    }
+
+    static IsDivided(char){
+        return char == '\t';
+    }
+
+    static IsJapaneseKind(kind){
+        return (kind == JapaneseCharacter.HiraganaKind() || kind == JapaneseCharacter.KatakanaKind() || kind == JapaneseCharacter.KanjiKind());
+    }
+
+    static IsSignKind(kind){
+        return (kind == JapaneseCharacter.EnterKind() || kind == JapaneseCharacter.DividedKind() || kind == JapaneseCharacter.OtherKind());
+    }
+
+    static HiraganaKind() {
+        return 1;
+    }
+
+    static KatakanaKind() {
+        return 2;
+    }
+
+    static KanjiKind() {
+        return 3;
+    }
+    
+    static EnterKind() {
+        return 4;
+    }
+
+    static DividedKind() {
+        return 5;
+    }
+
+    static OtherKind() {
+        return 0;
+    }
+
+    static GetCharKind(char){
+        if(JapaneseCharacter.IsHiragana(char)){
+            return JapaneseCharacter.HiraganaKind();
+        }else if(JapaneseCharacter.IsKatakana(char)){
+            return JapaneseCharacter.KatakanaKind();
+        }else if(JapaneseCharacter.IsKanji(char)){
+            return JapaneseCharacter.KanjiKind();
+        }else if(JapaneseCharacter.IsEnter(char)){
+            return JapaneseCharacter.EnterKind();
+        }else if(JapaneseCharacter.IsDivided(char)){
+            return JapaneseCharacter.DividedKind();
+        }else{
+            return JapaneseCharacter.OtherKind();
+        }
     }
 }

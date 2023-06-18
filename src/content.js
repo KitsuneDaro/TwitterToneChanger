@@ -1,4 +1,8 @@
 window.addEventListener('load', function () {
+    startTweetObserver();
+});
+
+function startTweetObserver() {
     getJSON('src/replace_word_dictionary.json').then((r) => {
         var dictionary = JSON.parse(r).ojosama;
 
@@ -8,71 +12,9 @@ window.addEventListener('load', function () {
 
         const tweetObserver = new TweetObserver({mainText:callback});
         tweetObserver.observe();
+
+        // ここにイベントリスナーで監視をやめる処理
     });
-});
-
-class TextToneChanger{
-    static ChangeTextTone(dividedString, dictionary) {
-        const japaneseStringInfosList = dividedString.getDividedStringByJapanese();
-
-        let prefixCharNum = 0;
-        let replaceInformationsList = [];
-
-        for(let stringInfosIndex = 0; stringInfosIndex < japaneseStringInfosList.length; stringInfosIndex++){
-            const stringInfo = japaneseStringInfosList[stringInfosIndex];
-            const string = stringInfo.segment;
-            const charKind = stringInfo.kind;
-            let nextStringInfo;
-
-            if(JapaneseCharacter.IsJapaneseKind(charKind)){
-                if(stringInfosIndex + 1 < japaneseStringInfosList.length){
-                    nextStringInfo = japaneseStringInfosList[stringInfosIndex + 1];
-                }else{
-                    nextStringInfo = {segment: '', kind: JapaneseCharacter.DividedKind()};
-                }
-
-                const nextCharKind = nextStringInfo.kind;
-
-                if(JapaneseCharacter.IsSignKind(nextCharKind)) {
-                    if(charKind == JapaneseCharacter.KatakanaKind() || charKind == JapaneseCharacter.KanjiKind()) {
-                        if(nextCharKind != JapaneseCharacter.OtherKind()){
-                            replaceInformationsList.push(new ReplaceInformation(prefixCharNum + string.length, 0, dictionary.notHiraganaSuffix));
-                        }else{
-                            if(stringInfosIndex + 2 < japaneseStringInfosList.length){
-                                const next2CharKind = japaneseStringInfosList[stringInfosIndex + 2].kind;
-
-                                if(next2CharKind == JapaneseCharacter.EnterKind() || next2CharKind == JapaneseCharacter.DividedKind()){
-                                    replaceInformationsList.push(new ReplaceInformation(prefixCharNum + string.length, 0, dictionary.notHiraganaSuffix));
-                                }
-                            }else{
-                                replaceInformationsList.push(new ReplaceInformation(prefixCharNum + string.length, 0, dictionary.notHiraganaSuffix));
-                            }
-                        }
-                    }
-                }
-            }
-
-            prefixCharNum += string.length;
-        }
-
-        dividedString.replaceByInformationsList(replaceInformationsList);
-
-        log(dividedString.getDividedStringByJapanese());
-
-        return dividedString;
-    }
-
-    static GetSegmentsListByIterator(dividedSegmentsIterator){
-        let segmentStringsList = [];
-    
-        for(const segment of dividedSegmentsIterator){
-            if(segment.segment != '\t') {
-                segmentStringsList.push(segment.segment);
-            }
-        }
-
-        return segmentStringsList;
-    }
 }
 
 function fixTweet(tweet, dictionary) {

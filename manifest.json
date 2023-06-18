@@ -10,12 +10,16 @@
       ],
       "js": [
         "./src/class/DividedString.js",
+        "./src/class/JapaneseCharacter.js",
+        "./src/class/JapaneseDividedString.js",
+        "./src/class/TextToneChanger.js",
         "./src/class/Tweet.js",
         "./src/class/TweetObserver.js",
         "./src/content.js"
       ]
     }
   ],
+  "all_frames": true,
   "web_accessible_resources": [
     {
       "resources": ["src/replace_word_dictionary.json"],
