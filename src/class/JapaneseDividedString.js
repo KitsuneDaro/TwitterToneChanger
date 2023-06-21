@@ -56,6 +56,6 @@ class JapaneseStringInfo {
     }
 
     static IsIncludingQuestionMark(string) {
-        return /[？?]/.test(string);
+        return /[？\?]/.test(string);
     }
 }

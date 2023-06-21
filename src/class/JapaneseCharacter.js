@@ -1,14 +1,14 @@
 class JapaneseCharacter {
     static IsHiragana(char){
-        return /[\u{3041}-\u{3093}\u{309B}-\u{309E}]/mu.test(char);
+        return /[\u{3041}-\u{3093}\u{309B}-\u{309E}]/u.test(char);
     }
 
     static IsKatakana(char){
-        return /[\u{30A1}-\u{30F6}\u{30FB}-\u{30FC}]/mu.test(char);
+        return /[\u{30A1}-\u{30F6}\u{30FB}-\u{30FC}]/u.test(char);
     }
 
     static IsKanji(char){
-        return /^([\u{3005}\u{3007}\u{303b}\u{3400}-\u{9FFF}\u{F900}-\u{FAFF}\u{20000}-\u{2FFFF}][\u{E0100}-\u{E01EF}\u{FE00}-\u{FE02}]?)$/mu.test(char);
+        return /^([\u{3005}\u{3007}\u{303b}\u{3400}-\u{9FFF}\u{F900}-\u{FAFF}\u{20000}-\u{2FFFF}][\u{E0100}-\u{E01EF}\u{FE00}-\u{FE02}]?)$/u.test(char);
     }
 
     static IsEnter(char){
@@ -20,7 +20,7 @@ class JapaneseCharacter {
     }
 
     static IsEnd(char) {
-        return /[。）」ｗw！？!?．　 ]/mu.test(char);
+        return /(。|\)|）|」|ｗ|w|！|？|\!|\?|．|　|…| )/.test(char);
     }
 
     static IsJapaneseKind(kind){
