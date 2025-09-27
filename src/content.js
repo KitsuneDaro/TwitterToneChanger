@@ -3,6 +3,8 @@ window.addEventListener('load', function () {
 });
 
 function startTweetObserver() {
+    console.log('Start tweet observer');
+
     getJSON('src/replace_word_dictionary.json').then((r) => {
         var dictionary = JSON.parse(r).ojosama;
 

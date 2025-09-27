@@ -22,11 +22,15 @@ class TweetObserver {
         const root = document.querySelector('#react-root main');
 
         if (nowURL != this.url && root) {
-            const section = document.getElementsByClassName('css-1dbjc4n r-14lw9ot r-jxzhtn r-1ljd8xs r-13l2t4g r-1phboty r-16y2uox r-1jgb5lz r-11wrixw r-61z16t r-1ye8kvj r-13qz1uu r-184en5c')[0];
+            const section = document.querySelectorAll('[class="css-175oi2r r-14lw9ot r-jxzhtn r-1ua6aaf r-th6na r-1phboty r-16y2uox r-184en5c r-1abdc3e r-1lg4w6u r-f8sm7e r-13qz1uu r-1ye8kvj"] section > [aria-label*="タイムライン"]')[0];
+            //document.getElementsByClassName('css-1dbjc4n r-14lw9ot r-jxzhtn r-1ljd8xs r-13l2t4g r-1phboty r-16y2uox r-1jgb5lz r-11wrixw r-61z16t r-1ye8kvj r-13qz1uu r-184en5c')[0];
+            console.log(section);
 
             if(section && !document.body.contains(this.timeline)){
+                console.log(section);
+                
                 this.url = nowURL;
-                this.timeline = section;
+                this.timeline = section;//.querySelectorAll('div')[0].children[0];
                 
                 if(this.observer){
                     this.observer.disconnect();
@@ -46,11 +50,15 @@ class TweetObserver {
             subtree: true
         });
         
-        const articlesList = this.timeline.querySelectorAll('article');
+        console.log(this.timeline);
+        setTimeout(() => {
+            const articlesList = this.timeline.querySelectorAll('article');
+            console.log(this.timeline, articlesList);
 
-        for (const article of articlesList) {
-            this.updateTweet(article);
-        }
+            for (const article of articlesList) {
+                this.updateTweet(article);
+            }
+        }, 10);
     }
 
     updateAllTweets(mutationsList, ownObserver) {
@@ -62,7 +70,9 @@ class TweetObserver {
     }
 
     updateTweet(article) {
+        console.log('hi')
         if (Tweet.IsNonfixedTweetArticle(article)) {
+            console.log(this.callback.mainText);
             if (this.callback.mainText) {
                 Tweet.ObserveMainTextDiv(article, this.callback.mainText);
             }

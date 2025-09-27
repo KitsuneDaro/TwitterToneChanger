@@ -43,7 +43,9 @@ class Tweet{
 
     // element取得系
     static GetMainTextDivByArticle(article) {
-        const mainTextDiv = Tweet.GetElementByTestid(article, 'tweetText');
+        const mainTextDiv = article;//Tweet.GetElementByTestid(article, 'tweetText');
+        console.log(mainTextDiv);
+        
         return mainTextDiv;
     }
 
@@ -60,8 +62,9 @@ class Tweet{
     }
 
     static GetMainTextSpansInMainTextDiv(mainTextDiv) {
-        const spansList = mainTextDiv.getElementsByTagName('span');
+        const spansList = mainTextDiv.querySelectorAll('span');//getElementsByTagName('span');
         const mainTextSpansList = [];
+        console.log(spansList);
 
         for(const span of spansList) {
             if(Tweet.IsMainTextSpan(span)){
@@ -92,8 +95,10 @@ class Tweet{
     }
 
     // 判定系
-    static IsMainTextSpan(span) {
-        if (span.getAttribute('class') == 'css-901oao css-16my406 r-1tl8opc r-bcqeeo r-qvutc0') {
+    static IsMainTextSpan(span) {// css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-1tl8opc
+        console.log('oh');
+        if (span.getAttribute('class') == 'css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-1tl8opc') {//'css-901oao css-16my406 r-1tl8opc r-bcqeeo r-qvutc0') {
+            console.log('good');
             if (span.parentNode.tagName == 'DIV' && span.parentNode.parentNode.tagName != 'A' && span.innerText != '·') {
                 return true;
             }

@@ -6,7 +6,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://twitter.com/*"
+        "https://x.com/*"
       ],
       "js": [
         "./src/class/DividedString.js",
@@ -19,7 +19,6 @@
       ]
     }
   ],
-  "all_frames": true,
   "web_accessible_resources": [
     {
       "resources": ["src/replace_word_dictionary.json"],
