@@ -1,6 +1,6 @@
 {
-  "name": "LikeReimu",
-  "version": "1.0.0",
+  "name": "TwitterToneChanger",
+  "version": "1.1.0",
   "manifest_version": 3,
   "description": "Sample Chrome Extension",
   "content_scripts": [
